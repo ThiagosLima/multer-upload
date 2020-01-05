@@ -1,8 +1,12 @@
 const express = require("express");
+const multer = require("multer");
+
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("Hello");
+const upload = multer({ dest: "images" });
+
+app.post("/upload", upload.array("upload"), (req, res) => {
+  res.send();
 });
 
 const PORT = 3000;
