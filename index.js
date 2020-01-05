@@ -1,12 +1,32 @@
 const express = require("express");
 const multer = require("multer");
+const mongoose = require("mongoose");
+const Comic = require("./models/comic");
 
 const app = express();
 
-const upload = multer({ dest: "images" });
+app.use(express.json());
 
-app.post("/upload", upload.array("upload"), (req, res) => {
+mongoose.connect("mongodb://localhost/comics-shop", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+const upload = multer();
+
+app.post("/comic", upload.array("upload"), async (req, res) => {
+  const { name } = req.body;
+  const pages = req.files;
+
+  const comic = new Comic({ name, pages });
+  await comic.save();
   res.send();
+});
+
+app.get("/comic/:id", async (req, res) => {
+  const comic = await Comic.findById(req.params.id);
+
+  res.send(comic);
 });
 
 const PORT = 3000;
